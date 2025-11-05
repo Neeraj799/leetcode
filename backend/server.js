@@ -5,12 +5,12 @@ import dotenv from "dotenv";
 import envConfig from "./config/envConfig.js";
 import { serve } from "inngest/express";
 import { inngest, functions } from "./lib/inngest.js";
-import { connectDB } from "./lib/connectDb.js";
+import { connectDB } from "./lib/connectDB.js";
 
 dotenv.config();
 
 const app = express();
-app.use(cors({ origin: envConfig.db.URL, credentials: true }));
+app.use(cors({ origin: envConfig.db.CLIENT_BASE_URL, credentials: true }));
 app.use(express.json());
 
 connectDB();

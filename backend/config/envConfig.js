@@ -9,6 +9,7 @@ const envConfig = {
 
   db: {
     URL: process.env.MONGO_URL,
+    CLIENT_BASE_URL: process.env.CLIENT_BASE_URL,
   },
 
   inngest: {
