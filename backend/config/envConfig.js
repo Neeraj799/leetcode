@@ -12,8 +12,8 @@ const envConfig = {
   },
 
   inngest: {
-    INGEST_EVENT_KEY: process.env.INGEST_EVENT_KEY,
-    INGEST_SIGNING_KEY: process.env.INGEST_SIGNING_KEY,
+    INNGEST_EVENT_KEY: process.env.INNGEST_EVENT_KEY,
+    INNGEST_SIGNING_KEY: process.env.INNGEST_SIGNING_KEY,
   },
 
   stream: {

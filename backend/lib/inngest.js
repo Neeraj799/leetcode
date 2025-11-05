@@ -3,7 +3,10 @@ import { Inngest } from "inngest";
 import User from "../models/User.js";
 import envConfig from "../config/envConfig.js";
 
-export const inngest = new Inngest({ id: "talent-iq" });
+export const inngest = new Inngest({
+  id: "talent-ai",
+  signingKey: envConfig.inngest.INNGEST_SIGNING_KEY,
+});
 
 const syncUser = inngest.createFunction(
   { id: "sync-user" },
