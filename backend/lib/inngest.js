@@ -3,7 +3,7 @@ import { Inngest } from "inngest";
 import User from "../models/User.js";
 import envConfig from "../config/envConfig.js";
 import { deleteStreamUser, upsertStreamUser } from "./stream.js";
-import { connectDB } from "./connectDb.js";
+import { connectDB } from "./connectDB.js";
 
 export const inngest = new Inngest({
   id: "talent-ai",
