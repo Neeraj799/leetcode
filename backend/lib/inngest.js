@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { Inngest } from "inngest";
 import User from "../models/User.js";
 import envConfig from "../config/envConfig.js";
+import { upsertStreamUser } from "./stream.js";
 
 export const inngest = new Inngest({
   id: "talent-ai",
@@ -33,7 +34,11 @@ const syncUser = inngest.createFunction(
 
     await User.create(newUser);
 
-    //todo: do sth else
+    await upsertStreamUser({
+      id: newUser.clerkId.toString(),
+      name: newUser.name,
+      image: newUser.profileImage,
+    });
   }
 );
 
@@ -54,7 +59,7 @@ const deleteUserFromDB = inngest.createFunction(
 
     await User.deleteOne({ clerkId: id });
 
-    // todo: do sth else
+    await deleteStream(id.toString());
   }
 );
 
