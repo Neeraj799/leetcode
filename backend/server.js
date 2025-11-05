@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import envConfig from "./config/envConfig.js";
 import { serve } from "inngest/express";
 import { inngest, functions } from "./lib/inngest.js";
+import { connectDB } from "./lib/connectDb.js";
 
 dotenv.config();
 
@@ -12,14 +13,7 @@ const app = express();
 app.use(cors({ origin: envConfig.db.URL, credentials: true }));
 app.use(express.json());
 
-mongoose
-  .connect(envConfig.db.URL)
-  .then(() => {
-    console.log("Mongoose connected");
-  })
-  .catch((err) => {
-    console.log("MongoDB connection error", err);
-  });
+connectDB();
 
 const PORT = envConfig.general.PORT || 8080;
 
