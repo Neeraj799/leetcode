@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { Inngest } from "inngest";
 import User from "../models/User.js";
 import envConfig from "../config/envConfig.js";
-import { upsertStreamUser } from "./stream.js";
+import { deleteStreamUser, upsertStreamUser } from "./stream.js";
 
 export const inngest = new Inngest({
   id: "talent-ai",
@@ -59,7 +59,7 @@ const deleteUserFromDB = inngest.createFunction(
 
     await User.deleteOne({ clerkId: id });
 
-    await deleteStream(id.toString());
+    await deleteStreamUser(id.toString());
   }
 );
 
