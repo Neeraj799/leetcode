@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { Inngest } from "inngest";
 import User from "../models/User.js";
 import envConfig from "../config/envConfig.js";
-import { upsertStreamUser } from "./stream.js";
+import { upsertUser } from "./stream.js";
 
 export const inngest = new Inngest({
   id: "talent-ai",
@@ -34,7 +34,7 @@ const syncUser = inngest.createFunction(
 
     await User.create(newUser);
 
-    await upsertStreamUser({
+    await upsertUser({
       id: newUser.clerkId.toString(),
       name: newUser.name,
       image: newUser.profileImage,

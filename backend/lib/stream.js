@@ -4,13 +4,13 @@ import envConfig from "../config/envConfig.js";
 const apiKey = envConfig.stream.STREAM_API_KEY;
 const apiSecret = envConfig.stream.STREAM_API_SECRET;
 
-if (!apiKey || apiSecret) {
+if (!apiKey || !apiSecret) {
   console.log("STREAM_API_KEY or STREAM_API_SECRET is missing");
 }
 
 export const chatClient = StreamChat.getInstance(apiKey, apiSecret);
 
-export const upsertStreamUser = async (userData) => {
+export const upsertUser = async (userData) => {
   try {
     await chatClient.upsertStreamUser(userData);
     console.log("Stream user upserted successfully", userData);
