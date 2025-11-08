@@ -16,8 +16,9 @@ const syncUser = inngest.createFunction(
   async ({ event }) => {
     await connectDB();
 
-    const { id, email_addresses, first_name, last_name, image_url } =
-      event.data;
+    const data = event.data?.object || event.data;
+
+    const { id, email_addresses, first_name, last_name, image_url } = data;
 
     const newUser = {
       clerkId: id,
@@ -26,7 +27,10 @@ const syncUser = inngest.createFunction(
       profileImage: image_url,
     };
 
-    await User.create(newUser);
+    await User.findOneAndUpdate({ clerkId: newUser.clerkId }, newUser, {
+      upsert: true,
+      new: true,
+    });
 
     await upsertStreamUser({
       id: newUser.clerkId.toString(),
@@ -40,16 +44,10 @@ const deleteUserFromDB = inngest.createFunction(
   { id: "delete-user-from-db" },
   { event: "clerk/user.deleted" },
   async ({ event }) => {
-    await mongoose
-      .connect(envConfig.db.URL)
-      .then(() => {
-        console.log("Mongoose connected");
-      })
-      .catch((err) => {
-        console.log("MongoDB connection error", err);
-      });
+    await connectDB();
 
-    const { id } = event.data;
+    const data = event.data?.object || event.data;
+    const { id } = data;
 
     await User.deleteOne({ clerkId: id });
 
