@@ -5,11 +5,11 @@ const envConfig = {
   general: {
     PORT: process.env.PORT || 8080,
     APP_KEY: process.env.SECRET_KEY || "testkey",
+    CLIENT_BASE_URL: process.env.CLIENT_BASE_URL,
   },
 
   db: {
     URL: process.env.MONGO_URL,
-    CLIENT_BASE_URL: process.env.CLIENT_BASE_URL,
   },
 
   inngest: {

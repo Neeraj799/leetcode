@@ -12,7 +12,7 @@ import sessionRoutes from "../backend/routes/sessionRoutes.js";
 dotenv.config();
 
 const app = express();
-app.use(cors({ origin: envConfig.db.CLIENT_BASE_URL, credentials: true }));
+app.use(cors({ origin: envConfig.general.CLIENT_BASE_URL, credentials: true }));
 app.use(express.json());
 app.use(clerkMiddleware());
 
