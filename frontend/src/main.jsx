@@ -10,11 +10,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 if (!PUBLISHABLE_KEY) {
-  throw new Error("Missing Publishable Key. Check your .env file.");
+  throw new Error("Missing Publishable Key");
 }
-
-// 👇 Optional but recommended for SPA routing (Clerk + React Router)
-const FRONTEND_DOMAIN = window.location.origin; // auto-detects localhost or Render
 
 const queryClient = new QueryClient();
 
@@ -22,11 +19,7 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
-        <ClerkProvider
-          publishableKey={PUBLISHABLE_KEY}
-          frontendApi={FRONTEND_DOMAIN}
-          navigate={(to) => window.history.pushState({}, "", to)}
-        >
+        <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
           <App />
         </ClerkProvider>
       </QueryClientProvider>
