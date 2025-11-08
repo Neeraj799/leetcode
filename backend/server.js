@@ -25,7 +25,7 @@ connectDB();
 
 const PORT = envConfig.general.PORT || 8080;
 
-app.get("/health", (req, res) => {
+app.get("/", (req, res) => {
   res.status(200).json({ mes: "api is up and running" });
 });
 
