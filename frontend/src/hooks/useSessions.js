@@ -3,97 +3,106 @@ import { sessionApi } from "../api/axios";
 import { toast } from "react-toastify";
 import { useAuth } from "@clerk/clerk-react";
 
+/**
+ * Helper hook: Automatically attaches Clerk JWT token
+ * to any API call using sessionApi.
+ */
+const useApi = () => {
+  const { getToken } = useAuth();
+
+  const withAuth = async (apiFn, ...args) => {
+    const token = await getToken();
+    if (!token) throw new Error("No auth token available");
+    return apiFn(...args, token);
+  };
+
+  return { withAuth };
+};
+
+/**
+ * Create a new coding session.
+ */
 export const useCreateSession = () => {
-  const { getToken } = useAuth();
+  const { withAuth } = useApi();
 
-  const result = useMutation({
+  return useMutation({
     mutationKey: ["createSession"],
-    mutationFn: async (data) => {
-      const token = await getToken();
-      return sessionApi.createSession(data, token);
-    },
-    onSuccess: () => toast.success("Session created successfully"),
+    mutationFn: (data) => withAuth(sessionApi.createSession, data),
+    onSuccess: () => toast.success("✅ Session created successfully!"),
     onError: (error) =>
-      toast.error(error.response?.data?.message || "Failed to create room"),
+      toast.error(
+        error.response?.data?.message || "❌ Failed to create session"
+      ),
   });
-
-  return result;
 };
 
+/**
+ * Fetch all active sessions.
+ */
 export const useActiveSessions = () => {
-  const { getToken } = useAuth();
+  const { withAuth } = useApi();
 
-  const result = useQuery({
+  return useQuery({
     queryKey: ["activeSessions"],
-    queryFn: async () => {
-      const token = await getToken();
-      return sessionApi.getActiveSessions(token);
-    },
+    queryFn: () => withAuth(sessionApi.getActiveSessions),
+    retry: false, // don't retry on 401 or token issues
   });
-
-  return result;
 };
 
+/**
+ * Fetch recently completed or joined sessions.
+ */
 export const useMyRecentSessions = () => {
-  const { getToken } = useAuth();
+  const { withAuth } = useApi();
 
-  const result = useQuery({
+  return useQuery({
     queryKey: ["myRecentSessions"],
-    queryFn: async () => {
-      const token = await getToken();
-      return sessionApi.getMyRecentSessions(token);
-    },
+    queryFn: () => withAuth(sessionApi.getMyRecentSessions),
+    retry: false,
   });
-
-  return result;
 };
 
+/**
+ * Fetch a single session by ID (auto-refreshes every 5s).
+ */
 export const useSessionById = (id) => {
-  const { getToken } = useAuth();
+  const { withAuth } = useApi();
 
-  const result = useQuery({
+  return useQuery({
     queryKey: ["session", id],
-    queryFn: async () => {
-      const token = await getToken();
-      return sessionApi.getSessionById(id, token);
-    },
+    queryFn: () => withAuth(sessionApi.getSessionById, id),
     enabled: !!id,
     refetchInterval: 5000,
+    retry: false,
   });
-
-  return result;
 };
 
+/**
+ * Join an existing session (as participant).
+ */
 export const useJoinSession = () => {
-  const { getToken } = useAuth();
+  const { withAuth } = useApi();
 
-  const result = useMutation({
+  return useMutation({
     mutationKey: ["joinSession"],
-    mutationFn: async (id) => {
-      const token = await getToken();
-      return sessionApi.joinSession(id, token);
-    },
-    onSuccess: () => toast.success("Joined session successfully!"),
+    mutationFn: (id) => withAuth(sessionApi.joinSession, id),
+    onSuccess: () => toast.success("🎉 Joined session successfully!"),
     onError: (error) =>
-      toast.error(error.response?.data?.message || "Failed to join session"),
+      toast.error(error.response?.data?.message || "❌ Failed to join session"),
   });
-
-  return result;
 };
 
+/**
+ * End an active session (host only).
+ */
 export const useEndSession = () => {
-  const { getToken } = useAuth();
+  const { withAuth } = useApi();
 
-  const result = useMutation({
+  return useMutation({
     mutationKey: ["endSession"],
-    mutationFn: async (id) => {
-      const token = await getToken();
-      return sessionApi.endSession(id, token);
-    },
-    onSuccess: () => toast.success("Session ended successfully!"),
+    mutationFn: (id) => withAuth(sessionApi.endSession, id),
+    onSuccess: () => toast.success("✅ Session ended successfully!"),
     onError: (error) =>
-      toast.error(error.response?.data?.message || "Failed to join session"),
+      toast.error(error.response?.data?.message || "❌ Failed to end session"),
   });
-
-  return result;
 };
