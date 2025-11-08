@@ -1,19 +1,11 @@
-import { requireAuth } from "@clerk/express";
+import { ClerkExpressRequireAuth } from "@clerk/express";
 import User from "../models/User.js";
 
 export const protectRoute = [
-  requireAuth({
-    onError: (error, req, res) => {
-      // Return JSON instead of redirecting
-      return res.status(401).json({
-        msg: "Unauthorized - Please sign in",
-        error: error.message,
-      });
-    },
-  }),
+  ClerkExpressRequireAuth(),
   async (req, res, next) => {
     try {
-      const clerkId = req.auth().userId;
+      const clerkId = req.auth?.userId;
 
       if (!clerkId)
         return res.status(401).json({ msg: "Unauthorized - invalid token" });
