@@ -1,8 +1,9 @@
 import { requireAuth } from "@clerk/express";
 import User from "../models/User.js";
+import envConfig from "../config/envConfig.js";
 
 export const protectRoute = [
-  requireAuth({ signInUrl: "/sign-in" }),
+  requireAuth({ signInUrl: `${envConfig.general.CLIENT_BASE_URL}/sign-in` }),
   async (req, res, next) => {
     try {
       const clerkId = req.auth().userId;
