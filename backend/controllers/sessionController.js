@@ -16,7 +16,7 @@ export const createSession = async (req, res) => {
     //generate a unique call id for stream video
     const callId = `session_${Date.now()}_${Math.random()
       .toString(36)
-      .subString(7)}`;
+      .substring(7)}`;
 
     //create session in db
     const session = await Session.create({
@@ -35,8 +35,7 @@ export const createSession = async (req, res) => {
     });
 
     //chat messaging
-
-    chatClient.channel("messaging", callId, {
+    const channel = chatClient.channel("messaging", callId, {
       name: `${problem} Session`,
       created_by_id: clerkId,
       members: [clerkId],
@@ -55,6 +54,7 @@ export const getActiveSessions = async (req, res) => {
   try {
     const sessions = await Session.find({ status: "active" })
       .populate("host", "name profileImage email clerkId")
+      .populate("participant", "name profileImage email clerkId")
       .sort({ createdAt: -1 })
       .limit(20);
 
@@ -103,7 +103,7 @@ export const getSessionById = async (req, res) => {
   }
 };
 
-export const joinSession = async (req, res) => {
+export async function joinSession(req, res) {
   try {
     const { id } = req.params;
     const userId = req.user._id;
@@ -125,24 +125,22 @@ export const joinSession = async (req, res) => {
         .json({ message: "Host cannot join their own session as participant" });
     }
 
-    // check if sesssion is already full - has a participant
-
-    if (session.participant) {
+    // check if session is already full - has a participant
+    if (session.participant)
       return res.status(409).json({ message: "Session is full" });
-    }
 
     session.participant = userId;
     await session.save();
 
-    const channel = chatClient.channel("message", session.callId);
+    const channel = chatClient.channel("messaging", session.callId);
     await channel.addMembers([clerkId]);
 
-    return res.status(200).json({ session });
+    res.status(200).json({ session });
   } catch (error) {
     console.log("Error in joinSession controller:", error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
-};
+}
 
 export const endSession = async (req, res) => {
   try {
