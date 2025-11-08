@@ -3,10 +3,6 @@ import { sessionApi } from "../api/axios";
 import { toast } from "react-toastify";
 import { useAuth } from "@clerk/clerk-react";
 
-/**
- * Helper hook: Automatically attaches Clerk JWT token
- * to any API call using sessionApi.
- */
 const useApi = () => {
   const { getToken } = useAuth();
 
@@ -19,9 +15,6 @@ const useApi = () => {
   return { withAuth };
 };
 
-/**
- * Create a new coding session.
- */
 export const useCreateSession = () => {
   const { withAuth } = useApi();
 
@@ -36,22 +29,16 @@ export const useCreateSession = () => {
   });
 };
 
-/**
- * Fetch all active sessions.
- */
 export const useActiveSessions = () => {
   const { withAuth } = useApi();
 
   return useQuery({
     queryKey: ["activeSessions"],
     queryFn: () => withAuth(sessionApi.getActiveSessions),
-    retry: false, // don't retry on 401 or token issues
+    retry: false,
   });
 };
 
-/**
- * Fetch recently completed or joined sessions.
- */
 export const useMyRecentSessions = () => {
   const { withAuth } = useApi();
 
@@ -62,9 +49,6 @@ export const useMyRecentSessions = () => {
   });
 };
 
-/**
- * Fetch a single session by ID (auto-refreshes every 5s).
- */
 export const useSessionById = (id) => {
   const { withAuth } = useApi();
 
@@ -77,9 +61,6 @@ export const useSessionById = (id) => {
   });
 };
 
-/**
- * Join an existing session (as participant).
- */
 export const useJoinSession = () => {
   const { withAuth } = useApi();
 
@@ -92,9 +73,6 @@ export const useJoinSession = () => {
   });
 };
 
-/**
- * End an active session (host only).
- */
 export const useEndSession = () => {
   const { withAuth } = useApi();
 
