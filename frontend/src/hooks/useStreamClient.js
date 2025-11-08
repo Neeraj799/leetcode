@@ -5,6 +5,7 @@ import { sessionApi } from "../api/axios";
 import { disconnectStreamClient, initializeStreamClient } from "../lib/stream";
 import { StreamChat } from "stream-chat";
 import { toast } from "react-toastify";
+import { useAuth } from "@clerk/clerk-react";
 
 const useStreamClient = (session, loadingSession, isHost, isParticipant) => {
   const [streamClient, setStreamClient] = useState(null);
@@ -12,6 +13,7 @@ const useStreamClient = (session, loadingSession, isHost, isParticipant) => {
   const [chatClient, setChatClient] = useState(null);
   const [channel, setChannel] = useState(null);
   const [isInitializingCall, setIsInitializingCall] = useState(true);
+  const { getToken } = useAuth();
 
   useEffect(() => {
     let videoCall = null;
@@ -22,8 +24,9 @@ const useStreamClient = (session, loadingSession, isHost, isParticipant) => {
       if (!isHost && !isParticipant) return;
 
       try {
+        const clerkToken = await getToken();
         const { token, userId, userName, userImage } =
-          await sessionApi.getStreamToken();
+          await sessionApi.getStreamToken(clerkToken);
 
         const client = await initializeStreamClient(
           {
@@ -83,7 +86,7 @@ const useStreamClient = (session, loadingSession, isHost, isParticipant) => {
         }
       })();
     };
-  }, [session, loadingSession, isHost, isParticipant]);
+  }, [session, loadingSession, isHost, isParticipant, getToken]);
 
   return {
     streamClient,
