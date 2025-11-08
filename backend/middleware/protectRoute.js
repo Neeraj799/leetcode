@@ -2,7 +2,15 @@ import { requireAuth } from "@clerk/express";
 import User from "../models/User.js";
 
 export const protectRoute = [
-  requireAuth(),
+  requireAuth({
+    onError: (error, req, res) => {
+      // Return JSON instead of redirecting
+      return res.status(401).json({
+        msg: "Unauthorized - Please sign in",
+        error: error.message,
+      });
+    },
+  }),
   async (req, res, next) => {
     try {
       const clerkId = req.auth().userId;
