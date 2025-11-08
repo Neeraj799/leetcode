@@ -4,8 +4,11 @@ import { PROBLEMS } from "../data/problems";
 import { Link } from "react-router-dom";
 import { ChevronRightIcon, Code2Icon } from "lucide-react";
 import { getDifficultyBadgeClass } from "../lib/utils";
+import { useActiveSessions } from "../hooks/useSessions";
 
 const ProblemsPage = () => {
+  const { data: activeSessions, isLoading, error } = useActiveSessions();
+
   const problems = Object.values(PROBLEMS);
 
   const easyProblemsCount = problems.filter(

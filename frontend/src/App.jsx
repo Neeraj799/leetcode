@@ -5,6 +5,7 @@ import ProblemsPage from "./pages/ProblemsPage";
 import { ToastContainer } from "react-toastify";
 import Dashboard from "./pages/Dashboard";
 import Problem from "./pages/Problem";
+import Session from "./pages/Session";
 
 function App() {
   const { isSignedIn, isLoaded } = useUser();
@@ -27,6 +28,10 @@ function App() {
         <Route
           path="/problem/:id"
           element={isSignedIn ? <Problem /> : <Navigate to={"/"} />}
+        />
+        <Route
+          path="/session/:id"
+          element={isSignedIn ? <Session /> : <Navigate to={"/"} />}
         />
       </Routes>
     </>
