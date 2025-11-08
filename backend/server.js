@@ -19,12 +19,7 @@ app.use(
   })
 );
 app.use(express.json());
-app.use(
-  clerkMiddleware({
-    signInUrl: `${envConfig.general.CLIENT_BASE_URL}/sign-in`,
-    apiKey: envConfig.clerk.CLERK_SECRET_KEY,
-  })
-);
+app.use(clerkMiddleware());
 
 connectDB();
 

@@ -3,7 +3,7 @@ import User from "../models/User.js";
 import envConfig from "../config/envConfig.js";
 
 export const protectRoute = [
-  requireAuth({ signInUrl: `${envConfig.general.CLIENT_BASE_URL}/sign-in` }),
+  requireAuth(),
   async (req, res, next) => {
     try {
       const clerkId = req.auth().userId;
