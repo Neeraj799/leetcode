@@ -75,7 +75,7 @@ const Dashboard = () => {
           </div>
 
           <RecentSessions
-            session={recentSessions}
+            sessions={recentSessions}
             isLoading={loadingRecentSessions}
           />
         </div>
